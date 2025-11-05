@@ -60,27 +60,31 @@ n_frames = 6  # 表示するフレーム数
 indices = np.linspace(0, steps-1, n_frames, dtype=int)
 frames = []
 
-for idx in indices:
+for idx_num, idx in enumerate(indices):
     fig, ax = plt.subplots(figsize=(2,6))
     H = height[idx]
     x = np.linspace(-0.005, 0.005, 5)
     y = H * (1 - (x/0.005)**2)
     ax.plot(x, y, color="blue", linewidth=4, alpha=0.6)
 
-    # 高さのスケール表示
+    # 最初のフレームだけ縦軸表示
+    if idx_num == 0:
+        ax.set_ylabel("Height [m]", fontsize=12)
+        ax.set_yticks(np.linspace(0, max(height), 5))
+        ax.tick_params(axis='y', labelsize=10)
+    else:
+        ax.set_yticks([])
+        ax.set_ylabel("")
+
     ax.set_ylim(0, max(height)*1.2)
     ax.set_xlim(-0.01, 0.01)
-    ax.set_ylabel("Height [m]", fontsize=8)
-    ax.set_yticks(np.linspace(0, max(height), 5))
-    ax.tick_params(axis='y', labelsize=8)
-    ax.tick_params(axis='x', bottom=False, labelbottom=False)
-
-    # 経過時間を図中に表示
-    ax.text(0, max(height)*1.15, f"{time[idx]:.2f} s", ha='center', fontsize=10, color='red')
-
     ax.set_xticks([])
-    plt.close(fig)
 
+    # 経過時間を図中に大きく表示
+    ax.text(0, max(height)*1.15, f"{time[idx]:.2f} s",
+            ha='center', fontsize=14, color='red', fontweight='bold')
+
+    plt.close(fig)
     buf = io.BytesIO()
     fig.savefig(buf, format='png', bbox_inches='tight')
     buf.seek(0)
@@ -95,4 +99,4 @@ st.write(f"**初期噴出速度:** {A_nozzle * np.sqrt(2*(P0_Pa-Patm)/rho) * 100
 st.write(f"**液が空になるまでの時間:** {time[i]:.2f} s")
 st.write(f"(P₀ = {P0:.2f} atm, η = {eta_sys:.2f}, r = {r_ratio:.2f}, d = {d_nozzle:.1f} mm, L = {L_nozzle:.1f} mm, Cd = {Cd:.3f})")
 
-st.caption("水柱の高さスケールと経過時間（秒）を図中に表示しています。")
+st.caption("最初のフレームのみ縦軸表示、各フレームに経過時間を大きく表示しています。")
