@@ -97,5 +97,5 @@ ax2.tick_params(axis='y', labelcolor="tab:red")
 fig.tight_layout()
 st.pyplot(fig)
 
-st.caption("The discharge coefficient C_d is automatically estimated from the nozzle geometry (L/d ratio). "
-           "A smaller nozzle diameter or longer nozzle reduces outflow rate, delaying pressure decay and maintaining higher jet height.")
+st.caption("流出係数Cd値はノズル形状（L/d比）から自動的に推定されます。"
+           "ノズル径を小さくするかノズルを長くすると流出率が低下し、圧力低下が遅延してより高い噴射高さを維持できます。")
