@@ -19,7 +19,7 @@ L_over_d = L_nozzle / d_nozzle
 Cd = 0.611 + 0.08 * np.exp(-3 * L_over_d)
 Cd = np.clip(Cd, 0.3, 1.0)  # physical bound
 
-st.sidebar.write(f"**Estimated discharge coefficient C_d:** {Cd:.3f}")
+st.sidebar.write(f"**流出係数の推算値 Cd:** {Cd:.3f}")
 
 # --- Constants ---
 rho = 1000.0
