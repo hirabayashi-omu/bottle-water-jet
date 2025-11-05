@@ -2,17 +2,17 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-st.title("💧 PET Bottle Fountain Simulator (Coaxial Jet + Pressure Decay Model)")
+st.title("💧 PET Bottle Fountain Simulator (噴流 + 圧力減衰モデル)")
 
-st.sidebar.header("Input Parameters")
+st.sidebar.header("入力パラメータ")
 
 # --- Inputs ---
-P0 = st.sidebar.slider("Initial internal pressure [atm]", 1.0, 5.0, 2.0, 0.1)
-r_ratio = st.sidebar.slider("Outer flow ratio r (outer/core)", 0.0, 1.0, 0.2, 0.05)
-eta_sys = st.sidebar.slider("System efficiency η", 0.1, 1.0, 0.6, 0.05)
-d_nozzle = st.sidebar.slider("Nozzle diameter d [mm]", 1.0, 10.0, 3.0, 0.5)
-L_nozzle = st.sidebar.slider("Nozzle length L [mm]", 0.5, 10.0, 3.0, 0.5)
-fill_ratio = st.sidebar.slider("Initial water filling ratio", 0.3, 0.9, 0.5, 0.05)
+P0 = st.sidebar.slider("初期圧力 [atm]", 1.0, 5.0, 2.0, 0.1)
+r_ratio = st.sidebar.slider("外周流速度比 r（外流/中心流)", 0.0, 1.0, 0.2, 0.05)
+eta_sys = st.sidebar.slider("系のエネルギー効率 η", 0.1, 1.0, 0.6, 0.05)
+d_nozzle = st.sidebar.slider("ノズル径 d [mm]", 1.0, 10.0, 3.0, 0.5)
+L_nozzle = st.sidebar.slider("ノズル長 L [mm]", 0.5, 10.0, 3.0, 0.5)
+fill_ratio = st.sidebar.slider("初期液充てん率", 0.3, 0.9, 0.5, 0.05)
 
 # --- Derived flow coefficient ---
 L_over_d = L_nozzle / d_nozzle
@@ -76,10 +76,10 @@ for i in range(steps):
     height[i] = H
 
 # --- Results ---
-st.subheader("🧮 Results")
-st.write(f"**Initial jet height:** {height[0]:.2f} m")
-st.write(f"**Initial flow rate:** {A_nozzle * np.sqrt(2*(P0_Pa-Patm)/rho) * 1000:.2f} L/s")
-st.write(f"**Duration until water depletion:** {time[i]:.2f} s")
+st.subheader("🧮 結果")
+st.write(f"**初期噴出高さ:** {height[0]:.2f} m")
+st.write(f"**初期噴出速度:** {A_nozzle * np.sqrt(2*(P0_Pa-Patm)/rho) * 1000:.2f} L/s")
+st.write(f"**液が空になるまでの時間（固定）:** {time[i]:.2f} s")
 st.write(f"(P₀ = {P0:.2f} atm, η = {eta_sys:.2f}, r = {r_ratio:.2f}, d = {d_nozzle:.1f} mm, L = {L_nozzle:.1f} mm, C_d = {Cd:.3f})")
 
 # --- Plot ---
