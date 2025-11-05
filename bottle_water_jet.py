@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-st.title("💧 PET Bottle Fountain Simulator (噴流 + 圧力減衰モデル)")
+st.title("💧 ペットボトル噴流シミュレーター (噴流 + 圧力減衰モデル)")
 
 st.sidebar.header("入力パラメータ")
 
