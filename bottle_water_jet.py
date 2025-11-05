@@ -37,9 +37,9 @@ P_list = np.linspace(0.1, 5, 50)
 h_list = eta * (Cd * np.sqrt(2 * P_list * 101325 / rho) * (1 - r)) ** 2 / (2 * g)
 
 ax.plot(P_list, h_list, color='royalblue', linewidth=2)
-ax.set_xlabel("初期内圧 [気圧]", fontsize=12)
-ax.set_ylabel("吹上げ高さ [m]", fontsize=12)
-ax.set_title("内圧と吹上げ高さの関係", fontsize=14)
+ax.set_xlabel("initial inner pressure [atm]", fontsize=12)
+ax.set_ylabel("jet height [m]", fontsize=12)
+ax.set_title("Relationship between initial inner pressure and jet height", fontsize=14)
 ax.grid(True)
 
 st.pyplot(fig)
