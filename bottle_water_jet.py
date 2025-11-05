@@ -3,9 +3,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
 
-# --- フォント設定（日本語対応）---
-plt.rcParams['font.family'] = 'MS Gothic'  # Windowsの場合
-# macOSなら 'Hiragino Sans'、Linuxなら 'IPAPGothic' に変更
+# --- 日本語フォント設定（明示的指定）---
+# Windows の MS Gothic のパスを直接登録
+font_path = "C:/Windows/Fonts/msgothic.ttc"
+font_prop = font_manager.FontProperties(fname=font_path)
+plt.rcParams['font.family'] = font_prop.get_name()
 
 st.set_page_config(page_title="水の吹上げ高さシミュレータ", layout="wide")
 
@@ -37,9 +39,9 @@ P_list = np.linspace(0.1, 5, 50)
 h_list = eta * (Cd * np.sqrt(2 * P_list * 101325 / rho) * (1 - r)) ** 2 / (2 * g)
 
 ax.plot(P_list, h_list, color='royalblue', linewidth=2)
-ax.set_xlabel("初期内圧 [気圧]", fontsize=12)
-ax.set_ylabel("吹上げ高さ [m]", fontsize=12)
-ax.set_title("内圧と吹上げ高さの関係", fontsize=14)
+ax.set_xlabel("初期内圧 [気圧]", fontsize=12, fontproperties=font_prop)
+ax.set_ylabel("吹上げ高さ [m]", fontsize=12, fontproperties=font_prop)
+ax.set_title("内圧と吹上げ高さの関係", fontsize=14, fontproperties=font_prop)
 ax.grid(True)
 
 st.pyplot(fig)
