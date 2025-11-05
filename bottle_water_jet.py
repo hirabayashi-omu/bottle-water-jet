@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import io
 
-st.title("💧 ペットボトル噴流シミュレーター (全フレームラベル付き)")
+st.title("💧 ペットボトル噴流シミュレーター (細長水柱表示)")
 
 # --- サイドバーパラメータ ---
 P0 = st.sidebar.slider("初期圧力 [atm]", 1.0, 6.0, 2.0, 0.1)
@@ -55,7 +55,7 @@ for i in range(steps):
     Va = V_bottle_m3 - Vw
     height[i] = H
 
-# --- 6フレームを作成 ---
+# --- 6フレームを作成 (細長水柱) ---
 n_frames = 6
 indices = np.linspace(0, steps-1, n_frames, dtype=int)
 frames = []
@@ -63,11 +63,14 @@ frames = []
 for idx in indices:
     fig, ax = plt.subplots(figsize=(2,6))
     H = height[idx]
-    x = np.linspace(-0.005, 0.005, 5)
-    y = H * (1 - (x/0.005)**2)
-    ax.plot(x, y, color="blue", linewidth=4, alpha=0.6)
     
-    # 縦軸ラベルと目盛りをすべて表示
+    # 細長い平行流（矩形）を多角形で描画
+    width = d_nozzle/1000  # ノズル径に応じた幅
+    x = np.array([-width/2, -width/2, width/2, width/2, -width/2])
+    y = np.array([0, H, H, 0, 0])
+    ax.fill(x, y, color="blue", alpha=0.6)
+    
+    # 縦軸ラベルと目盛り
     ax.set_ylabel("Height [m]", fontsize=10)
     ax.set_yticks(np.linspace(0, max(height), 5))
     ax.tick_params(axis='y', labelsize=8)
@@ -75,11 +78,11 @@ for idx in indices:
     ax.set_ylim(0, max(height)*1.2)
     ax.set_xlim(-0.01, 0.01)
     ax.set_xticks([])
-
-    # 経過時間を図中に大きく表示
+    
+    # 時間表示
     ax.text(0, max(height)*1.15, f"{time[idx]:.2f} s",
             ha='center', fontsize=12, color='red', fontweight='bold')
-
+    
     plt.close(fig)
     buf = io.BytesIO()
     fig.savefig(buf, format='png', bbox_inches='tight')
@@ -94,11 +97,4 @@ for row in range(2):
         if idx < n_frames:
             cols[col_num].image(frames[idx], use_column_width=True)
 
-# --- 計算結果 ---
-st.subheader("🧮 計算結果")
-st.write(f"**初期噴出高さ:** {height[0]:.2f} m")
-st.write(f"**初期噴出速度:** {A_nozzle * np.sqrt(2*(P0_Pa-Patm)/rho) * 1000:.2f} L/s")
-st.write(f"**液が空になるまでの時間:** {time[i]:.2f} s")
-st.write(f"(P₀ = {P0:.2f} atm, η = {eta_sys:.2f}, r = {r_ratio:.2f}, d = {d_nozzle:.1f} mm, L = {L_nozzle:.1f} mm, Cd = {Cd:.3f})")
-
-st.caption("すべてのフレームに縦軸ラベル・目盛り・時間ラベルを表示しました。")
+st.caption("水流を細く平行流の多角形で表示しました。各フレームに縦軸ラベル・目盛り・時間ラベル付き。")
