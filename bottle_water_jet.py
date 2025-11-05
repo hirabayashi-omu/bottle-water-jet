@@ -1,9 +1,8 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
-import io
 
-st.title("💧 ペットボトル噴流シミュレーター (細長水柱表示)")
+st.title("💧 ペットボトル噴流シミュレーター (並列表示)")
 
 # --- サイドバーパラメータ ---
 P0 = st.sidebar.slider("初期圧力 [atm]", 1.0, 6.0, 2.0, 0.1)
@@ -55,46 +54,25 @@ for i in range(steps):
     Va = V_bottle_m3 - Vw
     height[i] = H
 
-# --- 6フレームを作成 (細長水柱) ---
+# --- フレーム抽出 ---
 n_frames = 6
 indices = np.linspace(0, steps-1, n_frames, dtype=int)
-frames = []
 
-for idx in indices:
-    fig, ax = plt.subplots(figsize=(2,6))
+# --- 1つのグラフに並べる ---
+fig, axes = plt.subplots(1, n_frames, figsize=(15,6), sharey=True)
+
+for ax, idx in zip(axes, indices):
     H = height[idx]
-    
-    # 細長い平行流（矩形）を多角形で描画
-    width = d_nozzle/1000  # ノズル径に応じた幅
+    width = d_nozzle / 1000
     x = np.array([-width/2, -width/2, width/2, width/2, -width/2])
     y = np.array([0, H, H, 0, 0])
     ax.fill(x, y, color="blue", alpha=0.6)
-    
-    # 縦軸ラベルと目盛り
-    ax.set_ylabel("Height [m]", fontsize=10)
-    ax.set_yticks(np.linspace(0, max(height), 5))
-    ax.tick_params(axis='y', labelsize=8)
-    
-    ax.set_ylim(0, max(height)*1.2)
     ax.set_xlim(-0.01, 0.01)
+    ax.set_ylim(0, 5)  # 縦軸5 m固定
     ax.set_xticks([])
-    
-    # 時間表示
-    ax.text(0, max(height)*1.15, f"{time[idx]:.2f} s",
-            ha='center', fontsize=12, color='red', fontweight='bold')
-    
-    plt.close(fig)
-    buf = io.BytesIO()
-    fig.savefig(buf, format='png', bbox_inches='tight')
-    buf.seek(0)
-    frames.append(buf)
+    ax.set_title(f"{time[idx]:.2f} s", fontsize=10)
+    ax.set_ylabel("Height [m]", fontsize=10)
 
-# --- Streamlitで2行3列に均等配置 ---
-for row in range(2):
-    cols = st.columns(3)
-    for col_num in range(3):
-        idx = row*3 + col_num
-        if idx < n_frames:
-            cols[col_num].image(frames[idx], use_column_width=True)
-
-st.caption("水流を細く平行流の多角形で表示しました。各フレームに縦軸ラベル・目盛り・時間ラベル付き。")
+fig.tight_layout()
+st.pyplot(fig)
+st.caption("縦軸5 m固定で6フレームを並べて表示。細長い平行流の水柱です。")
