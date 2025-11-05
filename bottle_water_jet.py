@@ -1,6 +1,11 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import font_manager
+
+# --- フォント設定（日本語対応）---
+plt.rcParams['font.family'] = 'MS Gothic'  # Windowsの場合
+# macOSなら 'Hiragino Sans'、Linuxなら 'IPAPGothic' に変更
 
 st.set_page_config(page_title="水の吹上げ高さシミュレータ", layout="wide")
 
