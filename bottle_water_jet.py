@@ -12,7 +12,7 @@ r_ratio = st.sidebar.slider("外周流速度比 r（外流/中心流)", 0.0, 1.0
 eta_sys = st.sidebar.slider("系のエネルギー効率 η", 0.1, 1.0, 0.6, 0.05)
 d_nozzle = st.sidebar.slider("ノズル径 d [mm]", 1.0, 10.0, 3.0, 0.5)
 L_nozzle = st.sidebar.slider("ノズル長 L [mm]", 0.5, 10.0, 3.0, 0.5)
-fill_ratio = st.sidebar.slider("初期液充てん率", 0.3, 0.9, 0.5, 0.05)
+fill_ratio = st.sidebar.slider("初期液充てん率", 0.01, 0.99, 0.5, 0.05)
 
 # --- Derived flow coefficient ---
 L_over_d = L_nozzle / d_nozzle
