@@ -41,9 +41,9 @@ height[height < 0] = 0
 pressure = P0 - (P0 - 1.0) * (time / max(time))
 
 fig, ax1 = plt.subplots()
-ax1.plot(time, height, color="tab:blue", label="吹上げ高さ")
-ax1.set_xlabel("時間 [s]", fontname="MS Gothic")
-ax1.set_ylabel("高さ [m]", color="tab:blue", fontname="MS Gothic")
+ax1.plot(time, height, color="tab:blue", label="Jet Ejection Simulation from a Bottle")
+ax1.set_xlabel("time [sec]", fontname="MS Gothic")
+ax1.set_ylabel("jet hight [m]", color="tab:blue", fontname="MS Gothic")
 ax1.tick_params(axis='y', labelcolor="tab:blue")
 
 ax2 = ax1.twinx()
