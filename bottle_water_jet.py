@@ -35,7 +35,7 @@ steps = int(t_max / dt)
 # --- 配列初期化 ---
 time = np.linspace(0, t_max, steps)
 pressure = np.zeros(steps)
-v_eff_list = np.zeros(steps)
+height = np.zeros(steps)
 V_air = np.zeros(steps)
 V_water = np.zeros(steps)
 
@@ -57,6 +57,9 @@ for i in range(steps):
     v_outer = r_ratio * v_core
     v_eff = (v_core + v_outer) / 2
 
+    # 噴出高さ
+    H = eta_sys * v_eff**2 / (2 * g)
+
     # 流量 [m³/s]
     Q = A_nozzle * v_core
 
@@ -66,33 +69,30 @@ for i in range(steps):
 
     # 記録
     pressure[i] = P / Patm  # atm表示
-    v_eff_list[i] = v_eff
+    height[i] = H
     V_water[i] = Vw
     V_air[i] = Va
 
-# --- 吹上げ高さ ---
-H = eta_sys * (v_eff_list[0] ** 2) / (2 * g)
-
 # --- 結果表示 ---
 st.subheader("🧮 計算結果")
-st.write(f"**初期吹上げ高さ:** {H:.2f} m")
-st.write(f"**初期流量:** {A_nozzle * v_eff_list[0] * 1000:.2f} L/s")
+st.write(f"**初期吹上げ高さ:** {height[0]:.2f} m")
+st.write(f"**初期流量:** {A_nozzle * np.sqrt(2*(P0_Pa-Patm)/rho) * 1000:.2f} L/s")
 st.write(f"**噴出時間:** {time[i]:.2f} 秒で水が尽きる")
 st.write(f"(内圧 = {P0:.2f} 気圧, Cd = {Cd:.2f}, η = {eta_sys:.2f}, 外流比 r = {r_ratio:.2f}, ノズル径 = {d_nozzle:.1f} mm, ボトル容量 = 1.5 L)")
 
 # --- プロット ---
 fig, ax1 = plt.subplots()
-ax1.plot(time[:i], v_eff_list[:i], color="tab:blue", label="Ejection velocity")
-ax1.set_xlabel("time [s]", fontname="MS Gothic")
-ax1.set_ylabel("velocity [m/s]", color="tab:blue", fontname="MS Gothic")
+ax1.plot(time[:i], height[:i], color="tab:blue", label="Jet height")
+ax1.set_xlabel("時間 [s]", fontname="MS Gothic")
+ax1.set_ylabel("噴出高さ [m]", color="tab:blue", fontname="MS Gothic")
 ax1.tick_params(axis='y', labelcolor="tab:blue")
 
 ax2 = ax1.twinx()
 ax2.plot(time[:i], pressure[:i], color="tab:red", linestyle="--", label="inner pressure")
-ax2.set_ylabel("pressure [atm]", color="tab:red", fontname="MS Gothic")
+ax2.set_ylabel("内圧 [atm]", color="tab:red", fontname="MS Gothic")
 ax2.tick_params(axis='y', labelcolor="tab:red")
 
 fig.tight_layout()
 st.pyplot(fig)
 
-st.caption("※ボイルの法則による内圧減衰を考慮。ボトル内の空気膨張で圧力が低下し、噴出速度が減少します。")
+st.caption("※ボイルの法則による内圧減衰を考慮。内圧の低下に伴い噴出高さが時間とともに減少します。")
