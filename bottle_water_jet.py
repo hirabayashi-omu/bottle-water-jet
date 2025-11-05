@@ -2,13 +2,22 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
+import os
+import subprocess
 
-# --- 日本語フォント設定（明示的指定）---
-# Windows の MS Gothic のパスを直接登録
-font_path = "C:/Windows/Fonts/msgothic.ttc"
-font_prop = font_manager.FontProperties(fname=font_path)
-plt.rcParams['font.family'] = font_prop.get_name()
+# --- フォント設定（Linux環境に対応）---
+def set_japanese_font():
+    font_path = "/usr/share/fonts/truetype/ipafont-gothic/ipagp.ttf"
+    if not os.path.exists(font_path):
+        # フォント未インストールなら自動で入れる
+        subprocess.run(["apt-get", "update"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["apt-get", "install", "-y", "fonts-ipafont-gothic"],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    plt.rcParams['font.family'] = font_manager.FontProperties(fname=font_path).get_name()
 
+set_japanese_font()
+
+# --- Streamlit設定 ---
 st.set_page_config(page_title="水の吹上げ高さシミュレータ", layout="wide")
 
 st.title("💧 ペットボトル噴流の吹上げ高さシミュレーション")
@@ -39,9 +48,9 @@ P_list = np.linspace(0.1, 5, 50)
 h_list = eta * (Cd * np.sqrt(2 * P_list * 101325 / rho) * (1 - r)) ** 2 / (2 * g)
 
 ax.plot(P_list, h_list, color='royalblue', linewidth=2)
-ax.set_xlabel("初期内圧 [気圧]", fontsize=12, fontproperties=font_prop)
-ax.set_ylabel("吹上げ高さ [m]", fontsize=12, fontproperties=font_prop)
-ax.set_title("内圧と吹上げ高さの関係", fontsize=14, fontproperties=font_prop)
+ax.set_xlabel("初期内圧 [気圧]", fontsize=12)
+ax.set_ylabel("吹上げ高さ [m]", fontsize=12)
+ax.set_title("内圧と吹上げ高さの関係", fontsize=14)
 ax.grid(True)
 
 st.pyplot(fig)
