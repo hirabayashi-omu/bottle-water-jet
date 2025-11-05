@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-st.title("💧 ペットボトル噴流シミュレーター (並列表示)")
+st.title("💧 ペットボトル噴流シミュレーター (並列表示・大きいラベル)")
 
 # --- サイドバーパラメータ ---
 P0 = st.sidebar.slider("初期圧力 [atm]", 1.0, 6.0, 2.0, 0.1)
@@ -59,7 +59,7 @@ n_frames = 6
 indices = np.linspace(0, steps-1, n_frames, dtype=int)
 
 # --- 1つのグラフに並べる ---
-fig, axes = plt.subplots(1, n_frames, figsize=(15,6), sharey=True)
+fig, axes = plt.subplots(1, n_frames, figsize=(18,6), sharey=True)
 
 for ax, idx in zip(axes, indices):
     H = height[idx]
@@ -67,12 +67,19 @@ for ax, idx in zip(axes, indices):
     x = np.array([-width/2, -width/2, width/2, width/2, -width/2])
     y = np.array([0, H, H, 0, 0])
     ax.fill(x, y, color="blue", alpha=0.6)
+    
     ax.set_xlim(-0.01, 0.01)
     ax.set_ylim(0, 5)  # 縦軸5 m固定
     ax.set_xticks([])
-    ax.set_title(f"{time[idx]:.2f} s", fontsize=10)
-    ax.set_ylabel("Height [m]", fontsize=10)
+    
+    # 高さラベル大きく
+    ax.set_ylabel("Height [m]", fontsize=14)
+    ax.set_yticks(np.linspace(0, 5, 6))
+    ax.set_yticklabels([f"{h:.1f}" for h in np.linspace(0, 5, 6)], fontsize=12)
+    
+    # 秒表示を大きく
+    ax.set_title(f"{time[idx]:.1f} s", fontsize=16, color='red', fontweight='bold')
 
 fig.tight_layout()
 st.pyplot(fig)
-st.caption("縦軸5 m固定で6フレームを並べて表示。細長い平行流の水柱です。")
+st.caption("縦軸5 m固定で6フレームを並べ、時間ラベル・高さラベルを大きく表示しました。")
