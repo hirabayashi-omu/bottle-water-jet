@@ -47,8 +47,8 @@ ax1.set_ylabel("jet hight [m]", color="tab:blue", fontname="MS Gothic")
 ax1.tick_params(axis='y', labelcolor="tab:blue")
 
 ax2 = ax1.twinx()
-ax2.plot(time, pressure, color="tab:red", linestyle="--", label="内圧（ゲージ）")
-ax2.set_ylabel("内圧 [気圧]", color="tab:red", fontname="MS Gothic")
+ax2.plot(time, pressure, color="tab:red", linestyle="--", label="gauge pressure")
+ax2.set_ylabel("inner pressure [atm(G)]", color="tab:red", fontname="MS Gothic")
 ax2.tick_params(axis='y', labelcolor="tab:red")
 
 fig.tight_layout()
