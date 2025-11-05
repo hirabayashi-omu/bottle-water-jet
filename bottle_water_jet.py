@@ -69,16 +69,16 @@ for ax, idx in zip(axes, indices):
     ax.fill(x, y, color="blue", alpha=0.6)
     
     ax.set_xlim(-0.01, 0.01)
-    ax.set_ylim(0, 5)  # 縦軸5 m固定
+    ax.set_ylim(0, 3)  # 縦軸5 m固定
     ax.set_xticks([])
     
     # 高さラベル大きく
-    ax.set_ylabel("Height [m]", fontsize=14)
+    ax.set_ylabel("Height [m]", fontsize=24)
     ax.set_yticks(np.linspace(0, 5, 6))
     ax.set_yticklabels([f"{h:.1f}" for h in np.linspace(0, 5, 6)], fontsize=12)
     
     # 秒表示を大きく
-    ax.set_title(f"{time[idx]:.1f} s", fontsize=16, color='red', fontweight='bold')
+    ax.set_title(f"{time[idx]:.1f} s", fontsize=24, color='red', fontweight='bold')
 
 fig.tight_layout()
 st.pyplot(fig)
