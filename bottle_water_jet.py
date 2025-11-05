@@ -80,7 +80,7 @@ st.subheader("🧮 結果")
 st.write(f"**初期噴出高さ:** {height[0]:.2f} m")
 st.write(f"**初期噴出速度:** {A_nozzle * np.sqrt(2*(P0_Pa-Patm)/rho) * 1000:.2f} L/s")
 st.write(f"**液が空になるまでの時間（固定）:** {time[i]:.2f} s")
-st.write(f"(P₀ = {P0:.2f} atm, η = {eta_sys:.2f}, r = {r_ratio:.2f}, d = {d_nozzle:.1f} mm, L = {L_nozzle:.1f} mm, C_d = {Cd:.3f})")
+st.write(f"(P₀ = {P0:.2f} atm, η = {eta_sys:.2f}, r = {r_ratio:.2f}, d = {d_nozzle:.1f} mm, L = {L_nozzle:.1f} mm, Cd = {Cd:.3f})")
 
 # --- Plot ---
 fig, ax1 = plt.subplots()
