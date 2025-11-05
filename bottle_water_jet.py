@@ -85,4 +85,4 @@ for ax, idx in zip(axes, indices):
 
 fig.tight_layout()
 st.pyplot(fig)
-st.caption("縦軸5 m固定で水柱の上に高さラベル（●● m）を表示しました。")
+
