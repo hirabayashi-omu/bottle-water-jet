@@ -74,7 +74,9 @@ axes[0].set_ylabel("Height [m]")
 
 fig.tight_layout()
 st.pyplot(fig)
+plt.close(fig)  # ← ここを追加してDOMノードの競合を防ぐ
 
+# --- 計算結果 ---
 st.subheader("🧮 計算結果")
 st.write(f"**初期噴出高さ:** {height[0]:.2f} m")
 st.write(f"**初期噴出速度:** {A_nozzle * np.sqrt(2*(P0_Pa-Patm)/rho) * 1000:.2f} L/s")
