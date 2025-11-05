@@ -10,7 +10,7 @@ st.sidebar.header("入力パラメータ")
 P0 = st.sidebar.slider("初期内圧 [気圧]", 1.0, 5.0, 2.0, 0.1)
 r_ratio = st.sidebar.slider("外周流速度比 r（外流/中心流）", 0.0, 1.0, 0.2, 0.05)
 Cd = st.sidebar.slider("流出係数 C_d", 0.3, 1.0, 0.7, 0.05)
-eta_sys = st.sidebar.slider("システム効率 η", 0.1, 1.0, 0.6, 0.05)
+eta_sys = st.sidebar.slider("エネルギー効率 η", 0.1, 1.0, 0.6, 0.05)
 d_nozzle = st.sidebar.slider("噴出孔直径 d [mm]", 1.0, 10.0, 3.0, 0.5)
 fill_ratio = st.sidebar.slider("水の初期充填率", 0.3, 0.9, 0.5, 0.05)
 
