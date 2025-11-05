@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import io
 
-st.title("💧 ペットボトル噴流シミュレーター (安全版・フレーム表示)")
+st.title("💧 ペットボトル噴流シミュレーター (フレーム表示・時間ラベル付き)")
 
 # --- サイドバーパラメータ ---
 P0 = st.sidebar.slider("初期圧力 [atm]", 1.0, 6.0, 2.0, 0.1)
@@ -58,17 +58,27 @@ for i in range(steps):
 # --- 複数時刻のフレームを画像に変換して横並び表示 ---
 n_frames = 6  # 表示するフレーム数
 indices = np.linspace(0, steps-1, n_frames, dtype=int)
-
 frames = []
+
 for idx in indices:
     fig, ax = plt.subplots(figsize=(2,6))
     H = height[idx]
     x = np.linspace(-0.005, 0.005, 5)
     y = H * (1 - (x/0.005)**2)
     ax.plot(x, y, color="blue", linewidth=4, alpha=0.6)
-    ax.set_xlim(-0.01,0.01)
-    ax.set_ylim(0,max(height)*1.2)
-    ax.axis('off')
+
+    # 高さのスケール表示
+    ax.set_ylim(0, max(height)*1.2)
+    ax.set_xlim(-0.01, 0.01)
+    ax.set_ylabel("Height [m]", fontsize=8)
+    ax.set_yticks(np.linspace(0, max(height), 5))
+    ax.tick_params(axis='y', labelsize=8)
+    ax.tick_params(axis='x', bottom=False, labelbottom=False)
+
+    # 経過時間を図中に表示
+    ax.text(0, max(height)*1.15, f"{time[idx]:.2f} s", ha='center', fontsize=10, color='red')
+
+    ax.set_xticks([])
     plt.close(fig)
 
     buf = io.BytesIO()
@@ -76,7 +86,7 @@ for idx in indices:
     buf.seek(0)
     frames.append(buf)
 
-st.image(frames, width=100)  # 横並び表示
+st.image(frames, width=120)  # 横並び表示
 
 # --- 計算結果 ---
 st.subheader("🧮 計算結果")
@@ -85,4 +95,4 @@ st.write(f"**初期噴出速度:** {A_nozzle * np.sqrt(2*(P0_Pa-Patm)/rho) * 100
 st.write(f"**液が空になるまでの時間:** {time[i]:.2f} s")
 st.write(f"(P₀ = {P0:.2f} atm, η = {eta_sys:.2f}, r = {r_ratio:.2f}, d = {d_nozzle:.1f} mm, L = {L_nozzle:.1f} mm, Cd = {Cd:.3f})")
 
-st.caption("複数の時間での水柱を横並びで表示しています。動画化せずに時間変化を視覚化可能です。")
+st.caption("水柱の高さスケールと経過時間（秒）を図中に表示しています。")
