@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-st.title("💧 ペットボトル噴流シミュレーター (並列表示・大きいラベル)")
+st.title("💧 ペットボトル噴流シミュレーター")
 
 # --- サイドバーパラメータ ---
 P0 = st.sidebar.slider("初期圧力 [atm]", 1.0, 6.0, 2.0, 0.1)
@@ -82,4 +82,4 @@ for ax, idx in zip(axes, indices):
 
 fig.tight_layout()
 st.pyplot(fig)
-st.caption("縦軸5 m固定で6フレームを並べ、時間ラベル・高さラベルを大きく表示しました。")
+
