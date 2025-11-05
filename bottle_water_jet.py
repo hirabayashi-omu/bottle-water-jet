@@ -5,17 +5,6 @@ from matplotlib import font_manager
 import os
 import subprocess
 
-# --- フォント設定（Linux環境に対応）---
-def set_japanese_font():
-    font_path = "/usr/share/fonts/truetype/ipafont-gothic/ipagp.ttf"
-    if not os.path.exists(font_path):
-        # フォント未インストールなら自動で入れる
-        subprocess.run(["apt-get", "update"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        subprocess.run(["apt-get", "install", "-y", "fonts-ipafont-gothic"],
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    plt.rcParams['font.family'] = font_manager.FontProperties(fname=font_path).get_name()
-
-set_japanese_font()
 
 # --- Streamlit設定 ---
 st.set_page_config(page_title="水の吹上げ高さシミュレータ", layout="wide")
