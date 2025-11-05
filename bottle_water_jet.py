@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import io
 
-st.title("💧 ペットボトル噴流シミュレーター (フレーム表示・時間ラベル付き)")
+st.title("💧 ペットボトル噴流シミュレーター (2行3列フレーム表示)")
 
 # --- サイドバーパラメータ ---
 P0 = st.sidebar.slider("初期圧力 [atm]", 1.0, 6.0, 2.0, 0.1)
@@ -55,20 +55,23 @@ for i in range(steps):
     Va = V_bottle_m3 - Vw
     height[i] = H
 
-# --- 複数時刻のフレームを画像に変換して横並び表示 ---
-n_frames = 6  # 表示するフレーム数
+# --- 6フレームを作成 ---
+n_frames = 6
 indices = np.linspace(0, steps-1, n_frames, dtype=int)
 frames = []
 
-for idx_num, idx in enumerate(indices):
+for idx in indices:
     fig, ax = plt.subplots(figsize=(2,6))
     H = height[idx]
     x = np.linspace(-0.005, 0.005, 5)
     y = H * (1 - (x/0.005)**2)
     ax.plot(x, y, color="blue", linewidth=4, alpha=0.6)
+    ax.set_ylim(0, max(height)*1.2)
+    ax.set_xlim(-0.01, 0.01)
+    ax.set_xticks([])
 
-    # 最初のフレームだけ縦軸表示
-    if idx_num == 0:
+    # 縦軸は最初のフレームだけ表示
+    if idx == indices[0]:
         ax.set_ylabel("Height [m]", fontsize=12)
         ax.set_yticks(np.linspace(0, max(height), 5))
         ax.tick_params(axis='y', labelsize=10)
@@ -76,11 +79,7 @@ for idx_num, idx in enumerate(indices):
         ax.set_yticks([])
         ax.set_ylabel("")
 
-    ax.set_ylim(0, max(height)*1.2)
-    ax.set_xlim(-0.01, 0.01)
-    ax.set_xticks([])
-
-    # 経過時間を図中に大きく表示
+    # 時間表示（大きく）
     ax.text(0, max(height)*1.15, f"{time[idx]:.2f} s",
             ha='center', fontsize=14, color='red', fontweight='bold')
 
@@ -90,13 +89,10 @@ for idx_num, idx in enumerate(indices):
     buf.seek(0)
     frames.append(buf)
 
-st.image(frames, width=120)  # 横並び表示
-
-# --- 計算結果 ---
-st.subheader("🧮 計算結果")
-st.write(f"**初期噴出高さ:** {height[0]:.2f} m")
-st.write(f"**初期噴出速度:** {A_nozzle * np.sqrt(2*(P0_Pa-Patm)/rho) * 1000:.2f} L/s")
-st.write(f"**液が空になるまでの時間:** {time[i]:.2f} s")
-st.write(f"(P₀ = {P0:.2f} atm, η = {eta_sys:.2f}, r = {r_ratio:.2f}, d = {d_nozzle:.1f} mm, L = {L_nozzle:.1f} mm, Cd = {Cd:.3f})")
-
-st.caption("最初のフレームのみ縦軸表示、各フレームに経過時間を大きく表示しています。")
+# --- Streamlitで2行3列に均等配置 ---
+for row in range(2):
+    cols = st.columns(3)
+    for col_num in range(3):
+        idx = row*3 + col_num
+        if idx < n_frames:
+            cols[col_num].image(frames[idx], use_column_width=True)
