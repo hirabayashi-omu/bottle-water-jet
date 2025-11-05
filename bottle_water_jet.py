@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import io
 
-st.title("💧 ペットボトル噴流シミュレーター (2行3列フレーム表示)")
+st.title("💧 ペットボトル噴流シミュレーター (全フレームラベル付き)")
 
 # --- サイドバーパラメータ ---
 P0 = st.sidebar.slider("初期圧力 [atm]", 1.0, 6.0, 2.0, 0.1)
@@ -66,22 +66,19 @@ for idx in indices:
     x = np.linspace(-0.005, 0.005, 5)
     y = H * (1 - (x/0.005)**2)
     ax.plot(x, y, color="blue", linewidth=4, alpha=0.6)
+    
+    # 縦軸ラベルと目盛りをすべて表示
+    ax.set_ylabel("Height [m]", fontsize=10)
+    ax.set_yticks(np.linspace(0, max(height), 5))
+    ax.tick_params(axis='y', labelsize=8)
+    
     ax.set_ylim(0, max(height)*1.2)
     ax.set_xlim(-0.01, 0.01)
     ax.set_xticks([])
 
-    # 縦軸は最初のフレームだけ表示
-    if idx == indices[0]:
-        ax.set_ylabel("Height [m]", fontsize=12)
-        ax.set_yticks(np.linspace(0, max(height), 5))
-        ax.tick_params(axis='y', labelsize=10)
-    else:
-        ax.set_yticks([])
-        ax.set_ylabel("")
-
-    # 時間表示（大きく）
+    # 経過時間を図中に大きく表示
     ax.text(0, max(height)*1.15, f"{time[idx]:.2f} s",
-            ha='center', fontsize=14, color='red', fontweight='bold')
+            ha='center', fontsize=12, color='red', fontweight='bold')
 
     plt.close(fig)
     buf = io.BytesIO()
@@ -96,3 +93,12 @@ for row in range(2):
         idx = row*3 + col_num
         if idx < n_frames:
             cols[col_num].image(frames[idx], use_column_width=True)
+
+# --- 計算結果 ---
+st.subheader("🧮 計算結果")
+st.write(f"**初期噴出高さ:** {height[0]:.2f} m")
+st.write(f"**初期噴出速度:** {A_nozzle * np.sqrt(2*(P0_Pa-Patm)/rho) * 1000:.2f} L/s")
+st.write(f"**液が空になるまでの時間:** {time[i]:.2f} s")
+st.write(f"(P₀ = {P0:.2f} atm, η = {eta_sys:.2f}, r = {r_ratio:.2f}, d = {d_nozzle:.1f} mm, L = {L_nozzle:.1f} mm, Cd = {Cd:.3f})")
+
+st.caption("すべてのフレームに縦軸ラベル・目盛り・時間ラベルを表示しました。")
