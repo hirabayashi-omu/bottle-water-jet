@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-st.title("💧 ペットボトル噴流シミュレーター (数値ラベル付き)")
+st.title("💧 ペットボトル噴流シミュレーター")
 
 # --- サイドバーパラメータ ---
 P0 = st.sidebar.slider("初期圧力 [atm]", 1.0, 6.0, 2.0, 0.1)
@@ -73,15 +73,15 @@ for ax, idx in zip(axes, indices):
     ax.set_xticks([])
     
     # 高さラベル大きく
-    ax.set_ylabel("Height [m]", fontsize=14)
+    ax.set_ylabel("Height [m]", fontsize=24)
     ax.set_yticks(np.linspace(0, 5, 6))
     ax.set_yticklabels([f"{h:.1f}" for h in np.linspace(0, 5, 6)], fontsize=12)
     
     # 秒表示を大きく
-    ax.set_title(f"{time[idx]:.1f} s", fontsize=16, color='red', fontweight='bold')
+    ax.set_title(f"{time[idx]:.1f} s", fontsize=30, color='red', fontweight='bold')
     
     # --- 棒グラフの上に数値ラベル追加 ---
-    ax.text(0, H + 0.05, f"{H:.1f} m", fontsize=12, ha='center', color='black', fontweight='bold')
+    ax.text(0, H + 0.05, f"{H:.1f} m", fontsize=24, ha='center', color='black', fontweight='bold')
 
 fig.tight_layout()
 st.pyplot(fig)
