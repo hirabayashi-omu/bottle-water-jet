@@ -1,45 +1,57 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import font_manager
-import os
-import subprocess
 
+st.title("💧ペットボトル噴水シミュレーター（同軸噴流モデル）")
 
-# --- Streamlit設定 ---
-st.set_page_config(page_title="水の吹上げ高さシミュレータ", layout="wide")
+st.sidebar.header("入力パラメータ")
 
-st.title("💧 ペットボトル噴流の吹上げ高さシミュレーション")
+# --- 入力 ---
+P0 = st.sidebar.slider("初期内圧 [気圧]", 1.0, 5.0, 2.0, 0.1)
+r_ratio = st.sidebar.slider("外周流速度比 r（外流/中心流）", 0.0, 1.0, 0.2, 0.05)
+Cd = st.sidebar.slider("流出係数 C_d（縮流・摩擦損失）", 0.3, 1.0, 0.7, 0.05)
+eta_sys = st.sidebar.slider("システム効率 η（噴流損失）", 0.1, 1.0, 0.6, 0.05)
 
-# --- 入力パラメータ ---
-st.sidebar.header("入力パラメータ設定")
-P0 = st.sidebar.slider("初期内圧 [気圧]", 0.1, 5.0, 2.0, 0.1)
-r = st.sidebar.slider("外周流速度比 r", 0.0, 1.0, 0.2, 0.05)
-eta = st.sidebar.slider("エネルギー変換効率 η", 0.01, 0.5, 0.05, 0.01)
-
-# --- 物理パラメータ ---
-rho = 1000  # 水の密度 [kg/m3]
-P0_Pa = P0 * 101325  # [Pa]
-Cd = 0.62  # 縮流係数
+# --- 定数 ---
+rho = 1000.0  # 水 [kg/m3]
 g = 9.81
+Patm = 1.0 * 101325
+P0_Pa = P0 * 101325
 
-# --- 噴流中心速度と吹上高さ ---
-v_core = Cd * np.sqrt(2 * P0_Pa / rho) * (1 - r)
-h = eta * (v_core ** 2) / (2 * g)
+# --- 吹上げ高さ計算 ---
+deltaP = P0_Pa - Patm
+v_core = Cd * np.sqrt(2 * deltaP / rho)
+v_outer = r_ratio * v_core
+v_eff = (v_core + v_outer) / 2
+
+H = eta_sys * (v_eff**2) / (2 * g)
 
 # --- 結果表示 ---
-st.write(f"### 吹上げ高さの推定値: **{h:.2f} m**")
-st.write(f"(効率 η={eta:.2f}, 外周流速度比 r={r:.2f}, 初期内圧 {P0:.2f} 気圧)")
+st.subheader("🧮 計算結果")
+st.write(f"**吹上げ高さの推定値:** {H:.2f} m")
+st.write(f"(内圧 = {P0:.2f} 気圧, Cd = {Cd:.2f}, η = {eta_sys:.2f}, 外周流速度比 r = {r_ratio:.2f})")
 
-# --- グラフ ---
-fig, ax = plt.subplots(figsize=(7, 4))
-P_list = np.linspace(0.1, 5, 50)
-h_list = eta * (Cd * np.sqrt(2 * P_list * 101325 / rho) * (1 - r)) ** 2 / (2 * g)
+# --- 時間発展プロット ---
+t_max = 2 * v_eff / g
+time = np.linspace(0, t_max, 200)
+height = v_eff * time - 0.5 * g * time**2
+height[height < 0] = 0
 
-ax.plot(P_list, h_list, color='royalblue', linewidth=2)
-ax.set_xlabel("initial inner pressure [atm]", fontsize=12)
-ax.set_ylabel("jet height [m]", fontsize=12)
-ax.set_title("Relationship between initial inner pressure and jet height", fontsize=14)
-ax.grid(True)
+# 圧力変化（簡易的に線形減少と仮定）
+pressure = P0 - (P0 - 1.0) * (time / max(time))
 
+fig, ax1 = plt.subplots()
+ax1.plot(time, height, color="tab:blue", label="吹上げ高さ")
+ax1.set_xlabel("時間 [s]", fontname="MS Gothic")
+ax1.set_ylabel("高さ [m]", color="tab:blue", fontname="MS Gothic")
+ax1.tick_params(axis='y', labelcolor="tab:blue")
+
+ax2 = ax1.twinx()
+ax2.plot(time, pressure, color="tab:red", linestyle="--", label="内圧（ゲージ）")
+ax2.set_ylabel("内圧 [気圧]", color="tab:red", fontname="MS Gothic")
+ax2.tick_params(axis='y', labelcolor="tab:red")
+
+fig.tight_layout()
 st.pyplot(fig)
+
+st.caption("※縮流・摩擦・外流によるエネルギー損失を考慮しています。実際の吹上げ高さは実験条件でさらに低下します。")
