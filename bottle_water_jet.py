@@ -81,13 +81,13 @@ st.write(f"(内圧 = {P0:.2f} 気圧, Cd = {Cd:.2f}, η = {eta_sys:.2f}, 外流�
 # --- プロット ---
 fig, ax1 = plt.subplots()
 ax1.plot(time[:i], height[:i], color="tab:blue", label="Jet height")
-ax1.set_xlabel("時間 [s]", fontname="MS Gothic")
-ax1.set_ylabel("噴出高さ [m]", color="tab:blue", fontname="MS Gothic")
+ax1.set_xlabel("Time [s]", fontname="MS Gothic")
+ax1.set_ylabel("Jet height [m]", color="tab:blue", fontname="MS Gothic")
 ax1.tick_params(axis='y', labelcolor="tab:blue")
 
 ax2 = ax1.twinx()
 ax2.plot(time[:i], pressure[:i], color="tab:red", linestyle="--", label="inner pressure")
-ax2.set_ylabel("内圧 [atm]", color="tab:red", fontname="MS Gothic")
+ax2.set_ylabel("Inner pressure [atm]", color="tab:red", fontname="MS Gothic")
 ax2.tick_params(axis='y', labelcolor="tab:red")
 
 fig.tight_layout()
