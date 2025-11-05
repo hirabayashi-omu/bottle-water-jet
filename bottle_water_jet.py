@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 
-st.title("💧 ペットボトル噴流シミュレーター")
+st.title("🍾ペットボトル噴流シミュレーター")
 
 # --- サイドバーパラメータ ---
 P0 = st.sidebar.slider("初期圧力(絶対圧)[atm]", 1.0, 6.0, 2.0, 0.1)
